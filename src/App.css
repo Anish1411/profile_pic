@@ -1,38 +1,79 @@
-.App {
+.container {
+  max-width: 1470px;
+  margin: 0;
+  padding: 20px;
+  color: rgba(112, 112, 112, 0.85);
+}
+
+.userList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px;
+}
+
+.userCard {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.avatarSection {
   text-align: center;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.avatar {
+  width: 200px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.userDetails {
+  margin-left: 25px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.username {
+  font-size: 20px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #767676;
+}
+
+.icon {
+  margin-right: 10px;
+}
+
+.actions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-around;
+  padding: 15px 0;
+  background-color: #fafafa;
+  ;
 }
 
-.App-link {
-  color: #61dafb;
+.actionIcon {
+  cursor: pointer;
+  font-size: 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.heartIcon {
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.fill {
+  color: red !important;
+}
+
+.trashIcon {
+  color: #ff6257;
+}
+
+.editIcon {
+  color: #2196f3;
+  border-right: 2px solid #dad9d9;
+  border-left: 2px solid #dad9d9;
+  padding: 0 50px;
 }
