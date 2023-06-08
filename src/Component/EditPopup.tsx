@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useCallback } from "react";
 import "./EditPopup.css";
 
 interface EditPopupProps {
@@ -25,15 +25,21 @@ const EditPopup: React.FC<EditPopupProps> = ({ user, onSave, onCancel }) => {
         website: user.website,
     });
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setEditedUser((prevEditedUser) => ({ ...prevEditedUser, [name]: value }));
-    };
+    const handleInputChange = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            const { name, value } = e.target;
+            setEditedUser((prevEditedUser) => ({ ...prevEditedUser, [name]: value }));
+        },
+        []
+    );
 
-    const handleSave = (e: FormEvent) => {
-        e.preventDefault();
-        onSave(editedUser);
-    };
+    const handleSave = useCallback(
+        (e: FormEvent) => {
+            e.preventDefault();
+            onSave(editedUser);
+        },
+        [editedUser, onSave]
+    );
 
     return (
         <div className="editOverlay">

@@ -3,8 +3,8 @@ import axios from 'axios';
 import './main.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faTrashAlt, faPencilAlt, faEnvelope, faPhone, faGlobe } from '@fortawesome/free-solid-svg-icons';
-import Wait from './Component/waiting.tsx';
-import EditPopup from './Component/EditPopup.tsx';
+import Wait from './waiting.tsx';
+import EditPopup from './EditPopup.tsx';
 
 interface UserProfile {
     id: number;
@@ -16,7 +16,10 @@ interface UserProfile {
     liked: boolean;
 }
 
-function Main(): JSX.Element {
+const API_USERS_URL = 'https://jsonplaceholder.typicode.com/users';
+const DICEBEAR_API_URL = 'https://avatars.dicebear.com/v2/avataaars';
+
+function Main() {
     const [userProfiles, setUserProfiles] = useState<UserProfile[]>([]);
     const [editUserId, setEditUserId] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -24,25 +27,23 @@ function Main(): JSX.Element {
     useEffect(() => {
         let fetchTimeout: NodeJS.Timeout;
 
-        const fetchUsers = async () => {
+        const fetchUserProfiles = async () => {
             try {
-                // Fetching user data from API
-                const response = await axios.get('https://jsonplaceholder.typicode.com/users');
+                const response = await axios.get(API_USERS_URL);
                 const users: any[] = response.data.slice(0, 10);
 
-                // Generating avatars using Dicebear API
                 const updatedUserProfiles: UserProfile[] = await Promise.all(
                     users.map(async (user) => {
-                        const avatarResponse = await axios.get(
-                            `https://avatars.dicebear.com/v2/avataaars/${user.username}.svg?options[mood][]=happy`,
-                            {
-                                params: {
-                                    background: 'transparent',
-                                    width: 200,
-                                    height: 200,
+                        const avatarResponse = await axios.get(`${DICEBEAR_API_URL}/${user.username}.svg`, {
+                            params: {
+                                options: {
+                                    mood: ['happy'],
                                 },
-                            }
-                        );
+                                background: 'transparent',
+                                width: 200,
+                                height: 200,
+                            },
+                        });
 
                         return {
                             id: user.id,
@@ -63,25 +64,19 @@ function Main(): JSX.Element {
             }
         };
 
-        fetchTimeout = setTimeout(() => {
-            fetchUsers();
-        }, 1500);
+        fetchTimeout = setTimeout(fetchUserProfiles, 1500);
 
         return () => clearTimeout(fetchTimeout);
     }, []);
 
     const handleLike = (userId: number) => {
         setUserProfiles((prevUserProfiles) =>
-            prevUserProfiles.map((user) =>
-                user.id === userId ? { ...user, liked: !user.liked } : user
-            )
+            prevUserProfiles.map((user) => (user.id === userId ? { ...user, liked: !user.liked } : user))
         );
     };
 
     const handleDelete = (userId: number) => {
-        setUserProfiles((prevUserProfiles) =>
-            prevUserProfiles.filter((user) => user.id !== userId)
-        );
+        setUserProfiles((prevUserProfiles) => prevUserProfiles.filter((user) => user.id !== userId));
     };
 
     const handleEdit = (userId: number) => {
@@ -90,9 +85,7 @@ function Main(): JSX.Element {
 
     const handleSaveEdit = (editedUser: Partial<UserProfile>) => {
         setUserProfiles((prevUserProfiles) =>
-            prevUserProfiles.map((user) =>
-                user.id === editUserId ? { ...user, ...editedUser } : user
-            )
+            prevUserProfiles.map((user) => (user.id === editUserId ? { ...user, ...editedUser } : user))
         );
         setEditUserId(null);
     };
@@ -130,14 +123,8 @@ function Main(): JSX.Element {
                                 </p>
                             </div>
                             <div className="actions">
-                                <span
-                                    className={`actionIcon ${user.liked ? 'liked' : ''}`}
-                                    onClick={() => handleLike(user.id)}
-                                >
-                                    <FontAwesomeIcon
-                                        icon={faHeart}
-                                        className={`heartIcon ${user.liked ? 'fill' : ''}`}
-                                    />
+                                <span className={`actionIcon ${user.liked ? 'liked' : ''}`} onClick={() => handleLike(user.id)}>
+                                    <FontAwesomeIcon icon={faHeart} className={`heartIcon ${user.liked ? 'fill' : ''}`} />
                                 </span>
                                 <span className="actionIcon" onClick={() => handleEdit(user.id)}>
                                     <FontAwesomeIcon icon={faPencilAlt} className="editIcon" />
