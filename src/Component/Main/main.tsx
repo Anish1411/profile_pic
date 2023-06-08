@@ -3,8 +3,8 @@ import axios from 'axios';
 import './main.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faTrashAlt, faPencilAlt, faEnvelope, faPhone, faGlobe } from '@fortawesome/free-solid-svg-icons';
-import Wait from './waiting.tsx';
-import EditPopup from './EditPopup.tsx';
+import Wait from '../WaitingSpinnerComponent/waiting.tsx';
+import EditPopup from '../EditUserDetails/EditPopup.tsx';
 
 interface UserProfile {
     id: number;
