@@ -1,8 +1,23 @@
-import React from "react";
-import "./EditPopup.css"
-import { useState } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import "./EditPopup.css";
 
-function EditPopup({ user, onSave, onCancel }) {
+interface EditPopupProps {
+    user: {
+        username: string;
+        email: string;
+        phone: string;
+        website: string;
+    };
+    onSave: (editedUser: {
+        username: string;
+        email: string;
+        phone: string;
+        website: string;
+    }) => void;
+    onCancel: () => void;
+}
+
+const EditPopup: React.FC<EditPopupProps> = ({ user, onSave, onCancel }) => {
     const [editedUser, setEditedUser] = useState({
         username: user.username,
         email: user.email,
@@ -10,12 +25,12 @@ function EditPopup({ user, onSave, onCancel }) {
         website: user.website,
     });
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setEditedUser((prevEditedUser) => ({ ...prevEditedUser, [name]: value }));
     };
 
-    const handleSave = (e) => {
+    const handleSave = (e: FormEvent) => {
         e.preventDefault();
         onSave(editedUser);
     };
@@ -84,12 +99,11 @@ function EditPopup({ user, onSave, onCancel }) {
                         <button className="saveButton" type="submit">
                             Ok
                         </button>
-
                     </div>
                 </form>
             </div>
         </div>
     );
-}
+};
 
 export default EditPopup;
