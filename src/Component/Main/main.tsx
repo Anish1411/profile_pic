@@ -27,41 +27,40 @@ function Main() {
     useEffect(() => {
         let fetchTimeout: NodeJS.Timeout;
 
-        const fetchUserProfiles = async () => {
-            try {
-                const response = await axios.get(API_USERS_URL);
-                const users: any[] = response.data.slice(0, 10);
+        const fetchUserProfiles = () => {
+            axios.get(API_USERS_URL)
+                .then(response => {
+                    const users: any[] = response.data.slice(0, 10);
 
-                const updatedUserProfiles: UserProfile[] = await Promise.all(
-                    users.map(async (user) => {
-                        const avatarResponse = await axios.get(`${DICEBEAR_API_URL}/${user.username}.svg`, {
-                            params: {
-                                options: {
-                                    mood: ['happy'],
+                    Promise.all(
+                        users.map(user => {
+                            return axios.get(`${DICEBEAR_API_URL}/${user.username}.svg`, {
+                                params: {
+                                    options: {
+                                        mood: ['happy'],
+                                    },
+                                    background: 'transparent',
+                                    width: 200,
+                                    height: 200,
                                 },
-                                background: 'transparent',
-                                width: 200,
-                                height: 200,
-                            },
-                        });
-
-                        return {
-                            id: user.id,
-                            username: user.username,
-                            email: user.email,
-                            phone: user.phone,
-                            website: user.website,
-                            avatar: avatarResponse.config.url,
-                            liked: false,
-                        };
-                    })
-                );
-
-                setUserProfiles(updatedUserProfiles);
-                setIsLoading(false);
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
+                            }).then(avatarResponse => ({
+                                id: user.id,
+                                username: user.username,
+                                email: user.email,
+                                phone: user.phone,
+                                website: user.website,
+                                avatar: avatarResponse.config.url,
+                                liked: false,
+                            }));
+                        })
+                    ).then(updatedUserProfiles => {
+                        setUserProfiles(updatedUserProfiles);
+                        setIsLoading(false);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                });
         };
 
         fetchTimeout = setTimeout(fetchUserProfiles, 1500);
